@@ -5,48 +5,75 @@
     <title>LAZZAWEB Case Matcher Avanceret</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-radius: 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 650px;
+            margin: 60px auto;
+            padding: 25px;
+            background-color: #121212;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, #0d47a1, #1976d2, #42a5f5, #1565c0);
+            background-size: 400% 400%;
+            animation: luxuriousAnimation 25s ease infinite;
+            filter: blur(120px);
+            z-index: -1;
+        }
+        @keyframes luxuriousAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         input, button {
             width: 100%;
-            padding: 12px;
-            margin-top: 10px;
+            padding: 14px;
+            margin-top: 12px;
             font-size: 16px;
+            border-radius: 6px;
+            border: none;
             box-sizing: border-box;
+        }
+        input {
+            background-color: #1e1e1e;
+            color: #fff;
         }
         button {
             cursor: pointer;
-            background-color: #0056b3;
+            background-color: #2962ff;
             color: white;
-            border: none;
-            border-radius: 5px;
+            font-weight: bold;
         }
         button:hover {
-            background-color: #004494;
+            background-color: #0039cb;
         }
         #result, #suggestions, #testimonials, #case-summary {
             margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f4f4f4;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #1e1e1e;
         }
         .case-link {
             text-decoration: none;
-            color: #0056b3;
+            color: #64b5f6;
             font-weight: bold;
         }
         .suggestion-item {
             cursor: pointer;
-            padding: 5px;
-            border-bottom: 1px solid #ddd;
+            padding: 6px;
+            border-bottom: 1px solid #333;
         }
         .suggestion-item:hover {
-            background-color: #eaeaea;
+            background-color: #333;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
@@ -137,11 +164,11 @@ function findBestMatch() {
             <a class="case-link" href="${bestMatch.url}" target="_blank">Se casen her →</a>
         `;
         summaryDiv.innerHTML = bestMatch.summary;
-        testimonials.innerHTML = bestMatch.testimonials;
+        testimonialsDiv.innerHTML = bestMatch.testimonials;
     } else {
         resultDiv.textContent = 'Beklager, ingen matchende case fundet.';
         summaryDiv.innerHTML = '';
-        testimonials.innerHTML = '';
+        testimonialsDiv.innerHTML = '';
     }
 }
 </script>

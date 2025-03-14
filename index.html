@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>LAZZAWEB Case Matcher</title>
+    <title>LAZZAWEB Case Matcher Avanceret</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,7 +29,7 @@
         button:hover {
             background-color: #004494;
         }
-        #result {
+        #result, #suggestions {
             margin-top: 20px;
             padding: 10px;
             border-radius: 5px;
@@ -40,7 +40,16 @@
             color: #0056b3;
             font-weight: bold;
         }
+        .suggestion-item {
+            cursor: pointer;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .suggestion-item:hover {
+            background-color: #eaeaea;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
 </head>
 <body>
 
@@ -48,6 +57,7 @@
 <p>Indtast branche eller søgeord for din virksomhed:</p>
 
 <input type="text" id="userInput" placeholder="Fx: babylegetøj, fashion, bolig...">
+<div id="suggestions"></div>
 <button onclick="findBestMatch()">Find bedste match</button>
 
 <div id="result"></div>
@@ -76,23 +86,43 @@ const cases = [
     // TILFØJ FLERE CASES HER EFTER SAMME STRUKTUR
 ];
 
+// Fuse.js setup
+const options = {
+    keys: ["branche", "keywords"],
+    threshold: 0.4,
+};
+
+const fuse = new Fuse(cases, options);
+
+// Autocomplete suggestions
+const userInput = document.getElementById('userInput');
+userInput.addEventListener('input', function() {
+    const suggestionsDiv = document.getElementById('suggestions');
+    const query = userInput.value;
+    if (!query) {
+        suggestionsDiv.innerHTML = '';
+        return;
+    }
+
+    const results = fuse.search(query).slice(0, 5);
+    suggestionsDiv.innerHTML = results.map(r => 
+        `<div class="suggestion-item" onclick="selectSuggestion('${r.item.branche}')">${r.item.branche}</div>`
+    ).join('');
+});
+
+function selectSuggestion(value) {
+    userInput.value = value;
+    document.getElementById('suggestions').innerHTML = '';
+    findBestMatch();
+}
+
 function findBestMatch() {
-    const input = document.getElementById('userInput').value.toLowerCase();
-
-    let matches = cases.map(c => {
-        let score = 0;
-
-        if (c.branche.toLowerCase().includes(input)) score += 2;
-        c.keywords.forEach(k => { if (input.includes(k)) score++; });
-
-        return { ...c, score };
-    });
-
-    matches = matches.filter(m => m.score > 0).sort((a, b) => b.score - a.score);
-
+    const input = userInput.value;
     const resultDiv = document.getElementById('result');
-    if (matches.length > 0) {
-        const bestMatch = matches[0];
+    const results = fuse.search(input);
+
+    if (results.length > 0) {
+        const bestMatch = results[0].item;
         resultDiv.innerHTML = `
             <strong>${bestMatch.titel}</strong><br>
             Branche: ${bestMatch.branche}<br>

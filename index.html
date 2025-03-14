@@ -2,116 +2,107 @@
 <html lang="da">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEO Tjekliste</title>
+    <title>LAZZAWEB Case Matcher</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            max-width: 500px;
-            background: white;
+            max-width: 600px;
+            margin: 50px auto;
             padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
         }
-        input {
-            width: 80%;
-            padding: 8px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
         }
         button {
-            width: 85%;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            background-color: #007bff;
-            color: white;
             cursor: pointer;
-        }
-        .info-button {
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-            border: none;
-            padding: 3px 6px;
-            margin-left: 5px;
-            font-size: 10px;
-            border-radius: 5px;
-        }
-        .info-button:hover {
             background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
         }
-        .result {
+        button:hover {
+            background-color: #004494;
+        }
+        #result {
             margin-top: 20px;
             padding: 10px;
-            background: #e8f5e9;
-            border-left: 5px solid #4caf50;
-            text-align: left;
+            border-radius: 5px;
+            background-color: #f4f4f4;
+        }
+        .case-link {
+            text-decoration: none;
+            color: #0056b3;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>SEO Tjekliste</h2>
-        <p>Indsæt en URL for at analysere de vigtigste SEO-elementer:</p>
-        <input type="text" id="urlInput" placeholder="https://www.eksempel.dk">
-        <button onclick="checkSEO()">Tjek SEO</button>
-        <div id="result" class="result" style="display: none;"></div>
-    </div>
 
-    <script>
-        function showInfo(message) {
-            alert(message);
-        }
-        
-        function checkSEO() {
-            let url = document.getElementById("urlInput").value;
-            if (!url) {
-                alert("Indtast en gyldig URL");
-                return;
-            }
-            
-            fetch(url)
-                .then(response => response.text())
-                .then(html => {
-                    let parser = new DOMParser();
-                    let doc = parser.parseFromString(html, "text/html");
-                    
-                    let title = doc.querySelector("title")?.innerText || "Ingen title-tag fundet";
-                    let metaDesc = doc.querySelector("meta[name='description']")?.content || "Ingen meta description fundet";
-                    let h1 = doc.querySelector("h1")?.innerText || "Ingen H1 fundet";
-                    let images = doc.querySelectorAll("img");
-                    let imagesWithoutAlt = [...images].filter(img => !img.alt).length;
-                    let canonical = doc.querySelector("link[rel='canonical']")?.href || "Ingen canonical tag fundet";
-                    let robotsMeta = doc.querySelector("meta[name='robots']")?.content || "Ingen robots meta tag fundet";
-                    
-                    document.getElementById("result").innerHTML = `
-                        <h3>SEO Analyse:</h3>
-                        <p><strong>Title-tag:</strong> ${title} (${title.length} tegn) <button class="info-button" onclick="showInfo('Title-tags hjælper søgemaskiner med at forstå sidens emne.')">ℹ️</button></p>
-                        <p><strong>Meta description:</strong> ${metaDesc} (${metaDesc.length} tegn) <button class="info-button" onclick="showInfo('Meta descriptions øger klikraten i søgeresultater.')">ℹ️</button></p>
-                        <p><strong>H1-tag:</strong> ${h1} <button class="info-button" onclick="showInfo('H1-tags strukturerer indholdet og forbedrer SEO.')">ℹ️</button></p>
-                        <p><strong>Billeder uden alt-tekst:</strong> ${imagesWithoutAlt} <button class="info-button" onclick="showInfo('Alt-tekster hjælper billed-SEO og tilgængelighed.')">ℹ️</button></p>
-                        <p><strong>Canonical URL:</strong> ${canonical} <button class="info-button" onclick="showInfo('Canonical tags forhindrer duplicate content.')">ℹ️</button></p>
-                        <p><strong>Robots Meta Tag:</strong> ${robotsMeta} <button class="info-button" onclick="showInfo('Robots meta tags styrer indeksering.')">ℹ️</button></p>
-                    `;
-                    document.getElementById("result").style.display = "block";
-                })
-                .catch(error => {
-                    console.error("Fejl ved hentning af siden", error);
-                    alert("Kunne ikke hente data fra denne URL. Prøv en anden.");
-                });
-        }
-    </script>
+<h2>Find en case der matcher din forretning</h2>
+<p>Indtast branche eller søgeord for din virksomhed:</p>
+
+<input type="text" id="userInput" placeholder="Fx: babylegetøj, fashion, bolig...">
+<button onclick="findBestMatch()">Find bedste match</button>
+
+<div id="result"></div>
+
+<script>
+// DINE CASES FRA LAZZAWEB INDSÆTTES HER
+const cases = [
+    {
+        branche: "Babylegetøj",
+        keywords: ["børn", "baby", "legetøj", "familie"],
+        titel: "Kids World - vækst gennem Google Ads",
+        url: "https://lazzaweb.dk/cases/kids-world/"
+    },
+    {
+        branche: "Mode og Tøj",
+        keywords: ["tøj", "fashion", "mode", "stil"],
+        titel: "Jacbensun Plus - E-commerce vækst",
+        url: "https://lazzaweb.dk/cases/jacbensun-plus/"
+    },
+    {
+        branche: "Finans og Bank",
+        keywords: ["finans", "økonomi", "bank", "investering"],
+        titel: "Spar Nord - Effektiv markedsføring",
+        url: "https://lazzaweb.dk/cases/spar-nord/"
+    }
+    // TILFØJ FLERE CASES HER EFTER SAMME STRUKTUR
+];
+
+function findBestMatch() {
+    const input = document.getElementById('userInput').value.toLowerCase();
+
+    let matches = cases.map(c => {
+        let score = 0;
+
+        if (c.branche.toLowerCase().includes(input)) score += 2;
+        c.keywords.forEach(k => { if (input.includes(k)) score++; });
+
+        return { ...c, score };
+    });
+
+    matches = matches.filter(m => m.score > 0).sort((a, b) => b.score - a.score);
+
+    const resultDiv = document.getElementById('result');
+    if (matches.length > 0) {
+        const bestMatch = matches[0];
+        resultDiv.innerHTML = `
+            <strong>${bestMatch.titel}</strong><br>
+            Branche: ${bestMatch.branche}<br>
+            <a class="case-link" href="${bestMatch.url}" target="_blank">Se casen her →</a>
+        `;
+    } else {
+        resultDiv.textContent = 'Beklager, ingen matchende case fundet.';
+    }
+}
+</script>
+
 </body>
 </html>

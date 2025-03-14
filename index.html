@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>LAZZAWEB Case Matcher Avanceret</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             max-width: 650px;
-            margin: 60px auto;
-            padding: 25px;
+            margin: 30px auto;
+            padding: 15px;
             background-color: #121212;
             color: #ffffff;
             position: relative;
@@ -78,6 +79,32 @@
         .suggestion-item:hover {
             background-color: #eaeaea;
         }
+
+        @media (max-width: 768px) {
+            body {
+                margin: 15px;
+                padding: 10px;
+            }
+            h2 {
+                font-size: 1.4rem;
+            }
+            input, button {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                margin: 10px;
+                padding: 8px;
+            }
+            h2 {
+                font-size: 1.2rem;
+            }
+            input, button {
+                font-size: 14px;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0"></script>
 </head>
@@ -123,26 +150,8 @@ const cases = [
     }
 ];
 
-const options = {
-    keys: ["branche", "keywords"],
-    threshold: 0.4,
-};
-
+const options = { keys: ["branche", "keywords"], threshold: 0.4 };
 const fuse = new Fuse(cases, options);
-
-userInput.addEventListener('input', function() {
-    const suggestionsDiv = document.getElementById('suggestions');
-    const query = userInput.value;
-    if (!query) {
-        suggestionsDiv.innerHTML = '';
-        return;
-    }
-
-    const results = fuse.search(query).slice(0, 5);
-    suggestionsDiv.innerHTML = results.map(r => 
-        `<div class="suggestion-item" onclick="selectSuggestion('${r.item.branche}')">${r.item.branche}</div>`
-    ).join('');
-});
 
 function selectSuggestion(value) {
     userInput.value = value;
@@ -157,14 +166,9 @@ function findBestMatch() {
     const testimonialsDiv = document.getElementById('testimonials');
 
     const results = fuse.search(input);
-
     if (results.length > 0) {
         const bestMatch = results[0].item;
-        resultDiv.innerHTML = `
-            <strong>${bestMatch.titel}</strong><br>
-            Branche: ${bestMatch.branche}<br>
-            <a class="case-link" href="${bestMatch.url}" target="_blank">Se casen her →</a>
-        `;
+        resultDiv.innerHTML = `<strong>${bestMatch.titel}</strong><br>Branche: ${bestMatch.branche}<br><a class="case-link" href="${bestMatch.url}" target="_blank">Se casen her →</a>`;
         summaryDiv.innerHTML = bestMatch.summary;
         testimonialsDiv.innerHTML = bestMatch.testimonials;
     } else {

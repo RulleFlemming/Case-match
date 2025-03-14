@@ -62,41 +62,37 @@
 
 <div id="result"></div>
 
-<!-- Indsæt opsummering af case-resultater herunder -->
-<div id="case-summary"> Opnået disse resultater
-    <!-- TILFØJ OPSUMMERING AF CASE-RESULTATER HER -->
-</div>
-
-<!-- Indsæt testimonials/kundeudtalelser herunder -->
-<div id="testimonials"> Kunden udtaler
-    <!-- TILFØJ KUNDEUDTALELSER HER -->
-</div>
+<div id="case-summary"></div>
+<div id="testimonials"></div>
 
 <script>
-// DINE CASES FRA LAZZAWEB INDSÆTTES HER
 const cases = [
     {
         branche: "Babylegetøj",
         keywords: ["børn", "baby", "legetøj", "familie"],
         titel: "Kids World - vækst gennem Google Ads",
-        url: "https://lazzaweb.dk/cases/kids-world/"
+        url: "https://lazzaweb.dk/cases/kids-world/",
+        summary: "TILFØJ OPSUMMERING AF CASE-RESULTATER HER",
+        testimonials: "TILFØJ KUNDEUDTALELSER HER"
     },
     {
         branche: "Mode og Tøj",
         keywords: ["tøj", "fashion", "mode", "stil"],
         titel: "Jacbensun Plus - E-commerce vækst",
-        url: "https://lazzaweb.dk/cases/jacbensun-plus/"
+        url: "https://lazzaweb.dk/cases/jacbensun-plus/",
+        summary: "TILFØJ OPSUMMERING AF CASE-RESULTATER HER",
+        testimonials: "TILFØJ KUNDEUDTALELSER HER"
     },
     {
         branche: "Finans og Bank",
         keywords: ["finans", "økonomi", "bank", "investering"],
         titel: "Spar Nord - Effektiv markedsføring",
-        url: "https://lazzaweb.dk/cases/spar-nord/"
+        url: "https://lazzaweb.dk/cases/spar-nord/",
+        summary: "TILFØJ OPSUMMERING AF CASE-RESULTATER HER",
+        testimonials: "TILFØJ KUNDEUDTALELSER HER"
     }
-    // TILFØJ FLERE CASES HER EFTER SAMME STRUKTUR
 ];
 
-// Fuse.js setup
 const options = {
     keys: ["branche", "keywords"],
     threshold: 0.4,
@@ -104,7 +100,6 @@ const options = {
 
 const fuse = new Fuse(cases, options);
 
-// Autocomplete suggestions
 const userInput = document.getElementById('userInput');
 userInput.addEventListener('input', function() {
     const suggestionsDiv = document.getElementById('suggestions');
@@ -129,6 +124,9 @@ function selectSuggestion(value) {
 function findBestMatch() {
     const input = userInput.value;
     const resultDiv = document.getElementById('result');
+    const summaryDiv = document.getElementById('case-summary');
+    const testimonialsDiv = document.getElementById('testimonials');
+
     const results = fuse.search(input);
 
     if (results.length > 0) {
@@ -138,8 +136,12 @@ function findBestMatch() {
             Branche: ${bestMatch.branche}<br>
             <a class="case-link" href="${bestMatch.url}" target="_blank">Se casen her →</a>
         `;
+        summaryDiv.innerHTML = bestMatch.summary;
+        testimonials.innerHTML = bestMatch.testimonials;
     } else {
         resultDiv.textContent = 'Beklager, ingen matchende case fundet.';
+        summaryDiv.innerHTML = '';
+        testimonials.innerHTML = '';
     }
 }
 </script>

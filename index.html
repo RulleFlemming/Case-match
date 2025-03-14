@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Tjekliste</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .info-button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border: none;
+            padding: 5px 10px;
+            margin-left: 10px;
+            font-size: 12px;
+            border-radius: 5px;
+        }
+        .info-button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e8f5e9;
+            border-left: 5px solid #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>SEO Tjekliste</h2>
+        <p>Indsæt en URL for at analysere de vigtigste SEO-elementer:</p>
+        <input type="text" id="urlInput" placeholder="https://www.eksempel.dk">
+        <button onclick="checkSEO()">Tjek SEO</button>
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        function showInfo(message) {
+            alert(message);
+        }
+        
+        function checkSEO() {
+            let url = document.getElementById("urlInput").value;
+            if (!url) {
+                alert("Indtast en gyldig URL");
+                return;
+            }
+            
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    let parser = new DOMParser();
+                    let doc = parser.parseFromString(html, "text/html");
+                    
+                    let title = doc.querySelector("title")?.innerText || "Ingen title-tag fundet";
+                    let metaDesc = doc.querySelector("meta[name='description']")?.content || "Ingen meta description fundet";
+                    let h1 = doc.querySelector("h1")?.innerText || "Ingen H1 fundet";
+                    let images = doc.querySelectorAll("img");
+                    let imagesWithoutAlt = [...images].filter(img => !img.alt).length;
+                    let canonical = doc.querySelector("link[rel='canonical']")?.href || "Ingen canonical tag fundet";
+                    let robotsMeta = doc.querySelector("meta[name='robots']")?.content || "Ingen robots meta tag fundet";
+                    
+                    document.getElementById("result").innerHTML = `
+                        <h3>SEO Analyse:</h3>
+                        <p><strong>Title-tag:</strong> ${title} (${title.length} tegn) <button class="info-button" onclick="showInfo('Title-tags er vigtige for SEO, da de hjælper søgemaskiner med at forstå sidens emne.')">ℹ️</button></p>
+                        <p><strong>Meta description:</strong> ${metaDesc} (${metaDesc.length} tegn) <button class="info-button" onclick="showInfo('Meta descriptions giver en kort beskrivelse af siden og kan øge klikraten i søgeresultater.')">ℹ️</button></p>
+                        <p><strong>H1-tag:</strong> ${h1} <button class="info-button" onclick="showInfo('H1-tags er afgørende for SEO, da de hjælper med at strukturere indholdet på siden.')">ℹ️</button></p>
+                        <p><strong>Billeder uden alt-tekst:</strong> ${imagesWithoutAlt} <button class="info-button" onclick="showInfo('Alt-tekster hjælper med billed-SEO og gør din side mere tilgængelig.')">ℹ️</button></p>
+                        <p><strong>Canonical URL:</strong> ${canonical} <button class="info-button" onclick="showInfo('Canonical tags forhindrer duplicate content problemer og sikrer korrekt indeksering.')">ℹ️</button></p>
+                        <p><strong>Robots Meta Tag:</strong> ${robotsMeta} <button class="info-button" onclick="showInfo('Robots meta tags styrer, hvordan søgemaskiner crawler og indekserer din side.')">ℹ️</button></p>
+                    `;
+                    document.getElementById("result").style.display = "block";
+                })
+                .catch(error => {
+                    console.error("Fejl ved hentning af siden", error);
+                    alert("Kunne ikke hente data fra denne URL. Prøv en anden.");
+                });
+        }
+    </script>
+</body>
+</html>
